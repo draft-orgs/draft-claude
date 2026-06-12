@@ -1,0 +1,17 @@
+{
+  "name": "draft-claude",
+  "description": "Claude Code plugins, made with draft.",
+  "plugins": [
+    {
+      "name": "draft",
+      "source": "./plugins/draft"
+    },
+    {
+      "name": "shopify",
+      "source": "./plugins/shopify"
+    }
+  ],
+  "owner": {
+    "name": "Tien dep trai"
+  }
+}

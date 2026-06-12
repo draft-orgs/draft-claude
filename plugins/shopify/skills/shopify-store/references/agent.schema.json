@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/draft-orgs/draft-everything/.draft/schema/agent.schema.json",
+  "title": "Agent Definition",
+  "description": "JSON Schema describing the parsed form of an agent file with frontmatter prompt and rules",
+  "type": "object",
+  "required": ["name", "description", "model", "prompt", "rules", "checklists"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Optional relative path to this schema so editors can validate the file"
+    },
+    "name": {
+      "type": "string",
+      "description": "Agent name of two kebab tokens where the second token ends in er",
+      "pattern": "^[a-z]+-[a-z]+er$"
+    },
+    "description": {
+      "type": "string",
+      "description": "One short sentence saying when to use the agent not just what it does",
+      "pattern": "^use when [a-z0-9 ]*$"
+    },
+    "model": {
+      "type": "string",
+      "description": "The model tier this agent runs on",
+      "enum": ["opus", "sonnet", "haiku"]
+    },
+    "skills": {
+      "type": "array",
+      "description": "Skills the agent relies on with at least one entry",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "description": "A skill name of two kebab tokens",
+        "pattern": "^[a-z]+-[a-z]+$"
+      }
+    },
+    "prompt": {
+      "type": "string",
+      "description": "Opening line stating the role and the process this agent follows",
+      "pattern": "^You are a [a-z ]+er\\. When invoked, [a-z0-9 ,]+\\.$"
+    },
+    "rules": {
+      "type": "array",
+      "description": "List of DIW rules in which no item is a near duplicate of another",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "$ref": "skill.schema.json#/$defs/diw" }
+    },
+    "checklists": {
+      "type": "array",
+      "description": "List of checklist items each with an action a done condition and a skip condition",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "required": ["action", "done_when", "skip_when"],
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "type": "string",
+            "description": "The action to perform as one short sentence ending with a period",
+            "pattern": "^[A-Z][a-z0-9 ]*\\.$"
+          },
+          "done_when": {
+            "type": "string",
+            "description": "The condition that marks the action complete",
+            "pattern": "^[A-Z][a-z0-9 ]*\\.$"
+          },
+          "skip_when": {
+            "type": "string",
+            "description": "The condition under which the action can be skipped",
+            "pattern": "^[A-Z][a-z0-9 ]*\\.$"
+          }
+        }
+      }
+    }
+  }
+}
