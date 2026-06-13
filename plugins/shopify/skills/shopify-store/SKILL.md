@@ -40,9 +40,13 @@ description: use when querying or mutating a shopify store
 
 ## References
 
-- [Session import guide](./references/session-import.md) -- read when a store has no stored session
+- [Authentication guide](./references/authentication.md) -- read when a store needs auth
 
 ## Gotchas
+
+- **Don't:** Run the auth login yourself.
+  **Instead:** Guide the human to run auth and paste the session back.
+  **Why:** The human owns the login and its responsibility.
 
 - **Don't:** Retry auth with the same scopes when one is refused.
   **Instead:** Ask for the error then reissue the login with that scope excluded.
