@@ -45,8 +45,8 @@ description: use when querying or mutating a shopify store
 ## Gotchas
 
 - **Don't:** Run the auth login yourself.
-  **Instead:** Guide the human to run auth and paste the session back.
-  **Why:** The human owns the login and its responsibility.
+  **Instead:** Read the authentication guide in references then guide the human.
+  **Why:** The guide has the exact steps and the human owns the login.
 
 - **Don't:** Retry auth with the same scopes when one is refused.
   **Instead:** Ask for the error then reissue the login with that scope excluded.
