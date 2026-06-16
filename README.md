@@ -8,7 +8,8 @@ A Claude Code plugin marketplace. Made with draft.
 .claude-plugin/
 └── marketplace.json   # lists every plugin
 plugins/
-└── shopify/           # work with Shopify from Claude Code
+├── shopify/           # work with Shopify from Claude Code
+└── slice/             # turn any design into faithful code
 ```
 
 ## Setup
@@ -19,4 +20,5 @@ claude plugin marketplace add draft-orgs/draft-claude
 
 # 2. install a plugin from it (current project only)
 claude plugin install shopify@draft-claude --scope project
+claude plugin install slice@draft-claude --scope project
 ```

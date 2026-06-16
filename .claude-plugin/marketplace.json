@@ -5,6 +5,10 @@
     {
       "name": "shopify",
       "source": "./plugins/shopify"
+    },
+    {
+      "name": "slice",
+      "source": "./plugins/slice"
     }
   ],
   "owner": {
