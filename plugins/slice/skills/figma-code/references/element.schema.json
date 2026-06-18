@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Design Document",
+  "description": "A tree of visual elements extracted from a design source through a browser computed style",
+  "type": "object",
+  "required": ["children"],
+  "additionalProperties": false,
+  "properties": {
+    "children": {
+      "description": "The top level elements of the document",
+      "type": "array",
+      "items": { "$ref": "#/$defs/element" }
+    }
+  },
+  "$defs": {
+    "element": {
+      "description": "A single visual element that is a text a vector or a frame",
+      "type": "object",
+      "required": ["type", "box"],
+      "properties": {
+        "type": { "description": "The kind of the element", "type": "string", "enum": ["TEXT", "VECTOR", "FRAME", "IMAGE"] },
+        "box": {
+          "description": "The absolute position and size of the element in pixels",
+          "type": "object",
+          "required": ["x", "y", "width", "height"],
+          "additionalProperties": false,
+          "properties": {
+            "x":      { "description": "The left edge x coordinate in pixels", "type": "integer" },
+            "y":      { "description": "The top edge y coordinate in pixels", "type": "integer" },
+            "width":  { "description": "The width in pixels", "type": "integer" },
+            "height": { "description": "The height in pixels", "type": "integer" }
+          }
+        }
+      },
+      "oneOf": [
+        {
+          "description": "A text element holding its characters and typography",
+          "properties": {
+            "type":    { "description": "The text discriminator", "const": "TEXT" },
+            "content": { "description": "The text characters of the element", "type": "string", "pattern": "^[\\s\\S]+$" },
+            "style": {
+              "description": "The typography read from the computed style",
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "font-family":    { "description": "The font family list", "type": "string" },
+                "font-weight":    { "description": "The numeric font weight from 100 to 900", "type": "integer", "enum": [100, 200, 300, 400, 500, 600, 700, 800, 900] },
+                "font-size":      { "description": "The font size in pixels", "type": "integer" },
+                "text-align":     { "description": "The horizontal text alignment", "type": "string", "enum": ["left", "right", "center", "justify", "start", "end"] },
+                "letter-spacing": { "description": "The letter spacing in pixels", "type": "integer" },
+                "line-height":    { "description": "The line height in pixels", "type": "integer" },
+                "color":          { "description": "The text color as rgba", "type": "string", "pattern": "^rgba\\([0-9]+, [0-9]+, [0-9]+, [0-9.]+\\)$" }
+              }
+            }
+          },
+          "required": ["content", "style"]
+        },
+        {
+          "description": "A vector element holding inline svg or an svg source",
+          "properties": {
+            "type":    { "description": "The vector discriminator", "const": "VECTOR" },
+            "content": { "description": "The inline svg markup", "type": "string", "pattern": "^<svg[\\s\\S]*$" }
+          },
+          "required": ["content"]
+        },
+        {
+          "description": "An image element holding a rendered raster image source",
+          "properties": {
+            "type":    { "description": "The image discriminator", "const": "IMAGE" },
+            "content": { "description": "The image source file name", "type": "string", "pattern": "^[\\w./-]+\\.(png|jpe?g|gif|webp|avif)$" }
+          },
+          "required": ["content"]
+        },
+        {
+          "description": "A frame element holding its box style screenshot and child elements",
+          "properties": {
+            "type": { "description": "The frame discriminator", "const": "FRAME" },
+            "screenshot": { "description": "The file name of the rendered jpg of this frame", "type": "string", "pattern": "^[A-Za-z0-9._-]+\\.jpg$" },
+            "style": {
+              "description": "The box style read from the computed style",
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "border-top":    { "description": "The top border as width style and rgba color", "type": "string", "pattern": "^[0-9.]+px (solid|dashed|dotted|double) rgba\\([0-9]+, [0-9]+, [0-9]+, [0-9.]+\\)$" },
+                "border-right":  { "description": "The right border as width style and rgba color", "type": "string", "pattern": "^[0-9.]+px (solid|dashed|dotted|double) rgba\\([0-9]+, [0-9]+, [0-9]+, [0-9.]+\\)$" },
+                "border-bottom": { "description": "The bottom border as width style and rgba color", "type": "string", "pattern": "^[0-9.]+px (solid|dashed|dotted|double) rgba\\([0-9]+, [0-9]+, [0-9]+, [0-9.]+\\)$" },
+                "border-left":   { "description": "The left border as width style and rgba color", "type": "string", "pattern": "^[0-9.]+px (solid|dashed|dotted|double) rgba\\([0-9]+, [0-9]+, [0-9]+, [0-9.]+\\)$" },
+                "border-radius": { "description": "The corner radius in pixels with one to four values", "type": "string", "pattern": "^[0-9.]+px( [0-9.]+px){0,3}$" },
+                "background":            { "description": "The composited background as the browser serialized it", "type": "string" },
+                "background-blend-mode": {
+                  "description": "The per layer blend modes",
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": ["normal", "multiply", "screen", "overlay", "darken", "lighten", "color-dodge", "color-burn", "hard-light", "soft-light", "difference", "exclusion", "hue", "saturation", "color", "luminosity"]
+                  }
+                }
+              }
+            },
+            "children": {
+              "description": "The child elements of the frame",
+              "type": "array",
+              "items": { "$ref": "#/$defs/element" }
+            }
+          },
+          "required": ["children", "screenshot"]
+        }
+      ],
+      "unevaluatedProperties": false
+    }
+  }
+}
